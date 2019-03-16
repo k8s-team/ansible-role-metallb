@@ -1,0 +1,33 @@
+---
+- name: Ensures {{ destFolder }} dir exists
+  file:
+    path: "{{ destFolder }}"
+    state: directory
+
+- name: Copy files
+  copy:
+    src: "{{ item }}"
+    remote_src: no
+    dest: "{{ destFolder }}/{{ item }}"
+  loop:
+    - "metallb.yaml"
+
+- name: Install
+  k8s:
+    state: present
+    src: "{{ destFolder }}/{{ item }}"
+  loop:
+    - "metallb.yaml"
+
+- name: Create ConfigMap
+  template:
+    src: configmap.yaml
+    dest: "{{ destFolder }}/configmap.yaml"
+  register: configmap
+
+- name: Install ConfigMap
+  k8s:
+    state: present
+    src: "{{ destFolder }}/{{ item }}"
+  loop:
+    - "configmap.yaml"

@@ -1,0 +1,27 @@
+---
+
+- name: Check that {{ destFolder }} exists
+  stat:
+    path: "{{ destFolder }}"
+  register: setup
+
+- name: Uninstall ConfigMap
+  k8s:
+    state: absent
+    src: "{{ destFolder }}/{{ item }}"
+  loop:
+    - "configmap.yaml"
+  when: setup.stat.exists == True
+
+- name: Uninstall
+  k8s:
+    state: absent
+    src: "{{ destFolder }}/{{ item }}"
+  loop:
+    - "metallb.yaml"
+  when: setup.stat.exists == True
+
+- name: Clean {{ destFolder }}
+  file:
+    path: "{{ destFolder }}"
+    state: absent

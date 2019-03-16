@@ -1,0 +1,5 @@
+---
+destFolder: "{{ ansible_env.HOME }}/.k8s-team/metallab"
+addresses: ["192.168.57.102/32",]
+state: present
+
